@@ -46,6 +46,12 @@ class INIReader
 {
 public:
 	/**
+	* Construct INIReader and parse given filename. See ini.h for more info
+	* about the parsing.
+	*/
+	INIReader(std::istream & filestream);
+
+	/**
 	 * Construct INIReader and parse given filename. See ini.h for more info
 	 * about the parsing.
 	 */

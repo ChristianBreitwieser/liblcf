@@ -34,11 +34,7 @@
 
 #ifndef LCF_INI_H
 #define LCF_INI_H
-
-// Make this header file easier to include in C++ code
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <istream>
 
 /**
  * Parse given INI-style file. May have [section]s, name=value pairs
@@ -52,7 +48,7 @@ extern "C" {
  * @returns 0 on success, line number of first error on parse error (doesn't
  *          stop on first error), or -1 on file open error.
  */
-int ini_parse(const char* filename,
+int ini_parse(std::istream & filestream,
 			int (*handler)(void* user, const char* section,
 							 const char* name, const char* value),
 			void* user);
@@ -66,8 +62,5 @@ int ini_parse(const char* filename,
 #define INI_ALLOW_MULTILINE 1
 #endif
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

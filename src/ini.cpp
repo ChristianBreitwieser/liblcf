@@ -91,7 +91,7 @@ static char* strncpy0(char* dest, const char* src, size_t size)
 }
 
 // See documentation in header file.
-int ini_parse(const char* filename,
+int ini_parse(std::istream & file,
 			int (*handler)(void*, const char*, const char*, const char*),
 			void* user)
 {
@@ -100,7 +100,6 @@ int ini_parse(const char* filename,
 	char section[MAX_SECTION] = "";
 	char prev_name[MAX_NAME] = "";
 
-	FILE* file;
 	char* start;
 	char* end;
 	char* name;
@@ -108,12 +107,12 @@ int ini_parse(const char* filename,
 	int lineno = 0;
 	int error = 0;
 
-	file = fopen(filename, "r");
 	if (!file)
 		return -1;
 
 	// Scan through file line by line
-	while (fgets(line, sizeof(line), file) != NULL) {
+	;
+	while (!file.getline(line, sizeof(line)).eof()) {
 		lineno++;
 		start = lskip(rstrip((unsigned char*)line));
 
@@ -166,7 +165,6 @@ int ini_parse(const char* filename,
 		}
 	}
 
-	fclose(file);
 
 	return error;
 }
