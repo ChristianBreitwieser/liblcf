@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include <cstdio>
 #include "reader_types.h"
 
@@ -18,6 +19,13 @@
 class XmlWriter {
 
 public:
+	/**
+	* Constructs a new XML File Writer.
+	*
+	* @param filestream already opened filestream.
+	*/
+	XmlWriter(std::unique_ptr<std::ostream> filestream);
+
 	/**
 	 * Constructs a new XML File Writer.
 	 *
@@ -36,11 +44,6 @@ public:
 	 * Destructor. Closes the opened file.
 	 */
 	~XmlWriter();
-
-	/**
-	 * Opens the file.
-	 */
-	void Open();
 
 	/**
 	 * Closes the opened file.
@@ -108,10 +111,15 @@ public:
 	bool IsOk() const;
 
 protected:
+	/**
+	* Opens the file.
+	*/
+	void Open();
+
 	/** Name of the file that is associated with the stream. */
 	std::string filename;
 	/** File-stream managed by this Writer. */
-	FILE *stream;
+	std::unique_ptr<std::ostream> stream;
 	/** Stores indentation level. */
 	int indent;
 	/** Indicates if writer cursor is at the beginning of the line. */
