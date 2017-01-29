@@ -11,7 +11,7 @@
 #include <vector>
 #include <iosfwd>
 #include <cstring>
-#include <cstdio>
+#include <memory>
 #include <cassert>
 #include "reader_types.h"
 #include "reader_options.h"
@@ -23,6 +23,14 @@
 class LcfWriter {
 
 public:
+	/**
+	* Constructs a new File Writer.
+	*
+	* @param filestream already opened filestream.
+	* @param encoding name of the encoding.
+	*/
+	LcfWriter(std::unique_ptr<std::ostream> filestream, std::string encoding = "");
+
 	/**
 	 * Constructs a new File Writer.
 	 *
@@ -111,7 +119,7 @@ private:
 	/** Name of the encoding. */
 	std::string encoding;
 	/** File-stream managed by this Writer. */
-	FILE* stream;
+	std::unique_ptr<std::ostream> stream;
 
 	/**
 	 * Converts a 16bit signed integer to/from little-endian.
