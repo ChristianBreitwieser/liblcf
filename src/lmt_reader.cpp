@@ -10,29 +10,29 @@
 #include "reader_util.h"
 #include "reader_struct.h"
 
-bool LMT_Reader::Load(const std::string& filename, const std::string &encoding) {
-	LcfReader reader(filename, encoding);
+bool LMT_Reader::Load(std::istream & filestream, const std::string &encoding) {
+	LcfReader reader(filestream, encoding);
 	if (!reader.IsOk()) {
-		LcfReader::SetError("Couldn't find %s map tree file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse map tree file.\n");
 		return false;
 	}
 	std::string header;
 	reader.ReadString(header, reader.ReadInt());
 	if (header.length() != 10) {
-		LcfReader::SetError("%s is not a valid RPG2000 map tree.\n", filename.c_str());
+		LcfReader::SetError("This is not a valid RPG2000 map tree.\n");
 		return false;
 	}
 	if (header != "LcfMapTree") {
-		fprintf(stderr, "Warning: %s header is not LcfMapTree and might not be a valid RPG2000 map tree.\n", filename.c_str());
+		fprintf(stderr, "Warning: This header is not LcfMapTree and might not be a valid RPG2000 map tree.\n");
 	}
 	TypeReader<RPG::TreeMap>::ReadLcf(Data::treemap, reader, 0);
 	return true;
 }
 
-bool LMT_Reader::Save(const std::string& filename, const std::string &encoding) {
-	LcfWriter writer(filename, encoding);
+bool LMT_Reader::Save(std::ostream & filestream, const std::string &encoding) {
+	LcfWriter writer(filestream, encoding);
 	if (!writer.IsOk()) {
-		LcfReader::SetError("Couldn't find %s map tree file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse map tree file.\n");
 		return false;
 	}
 	const std::string header("LcfMapTree");
@@ -42,10 +42,10 @@ bool LMT_Reader::Save(const std::string& filename, const std::string &encoding) 
 	return true;
 }
 
-bool LMT_Reader::SaveXml(const std::string& filename) {
-	XmlWriter writer(filename);
+bool LMT_Reader::SaveXml(std::ostream & filestream) {
+	XmlWriter writer(filestream);
 	if (!writer.IsOk()) {
-		LcfReader::SetError("Couldn't find %s map tree file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse map tree file.\n");
 		return false;
 	}
 	writer.BeginElement("LMT");
@@ -54,10 +54,10 @@ bool LMT_Reader::SaveXml(const std::string& filename) {
 	return true;
 }
 
-bool LMT_Reader::LoadXml(const std::string& filename) {
-	XmlReader reader(filename);
+bool LMT_Reader::LoadXml(std::istream & filestream) {
+	XmlReader reader(filestream);
 	if (!reader.IsOk()) {
-		LcfReader::SetError("Couldn't open %s map tree file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse map tree file.\n");
 		return false;
 	}
 	reader.SetHandler(new RootXmlHandler<RPG::TreeMap>(Data::treemap, "LMT"));

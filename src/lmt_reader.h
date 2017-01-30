@@ -21,22 +21,22 @@ namespace LMT_Reader {
 	/**
 	 * Loads Map Tree.
 	 */
-	bool Load(const std::string& filename, const std::string &encoding);
+	bool Load(std::istream& filestream, const std::string &encoding);
 
 	/**
 	 * Saves Map Tree.
 	 */
-	bool Save(const std::string& filename, const std::string &encoding);
+	bool Save(std::ostream& filestream, const std::string &encoding);
 
 	/**
 	 * Saves Map Tree as XML.
 	 */
-	bool SaveXml(const std::string& filename);
+	bool SaveXml(std::ostream& filestream);
 
 	/**
 	 * Loads Map Tree as XML.
 	 */
-	bool LoadXml(const std::string& filename);
+	bool LoadXml(std::istream& filestream);
 }
 
 #endif

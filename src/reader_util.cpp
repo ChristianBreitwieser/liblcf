@@ -29,7 +29,6 @@
 #endif
 
 #include <cstdlib>
-#include <cstdio>
 #include <sstream>
 #include <vector>
 
@@ -71,8 +70,8 @@ std::string ReaderUtil::CodepageToEncoding(int codepage) {
 	return outs;
 }
 
-std::string ReaderUtil::DetectEncoding(const std::string &database_file) {
-	std::vector<std::string> encodings = DetectEncodings(database_file);
+std::string ReaderUtil::DetectEncoding(std::istream & filestream) {
+	std::vector<std::string> encodings = DetectEncodings(filestream);
 
 	if (encodings.empty()) {
 		return "";
@@ -81,13 +80,13 @@ std::string ReaderUtil::DetectEncoding(const std::string &database_file) {
 	return encodings.front();
 }
 
-std::vector<std::string> ReaderUtil::DetectEncodings(const std::string& database_file) {
+std::vector<std::string> ReaderUtil::DetectEncodings(std::istream & filestream) {
 	std::vector<std::string> encodings;
 #ifdef LCF_SUPPORT_ICU
 	std::ostringstream text;
 
 	// Populate Data::terms and Data::system or will empty by default even if load fails
-	LDB_Reader::Load(database_file, "");
+	LDB_Reader::Load(filestream, "");
 
 	text <<
 	Data::terms.menu_save <<
@@ -180,8 +179,8 @@ std::vector<std::string> ReaderUtil::DetectEncodings(const std::string& database
 	return encodings;
 }
 
-std::string ReaderUtil::GetEncoding(const std::string& ini_file) {
-	INIReader ini(ini_file);
+std::string ReaderUtil::GetEncoding(std::istream & filestream) {
+	INIReader ini(filestream);
 	if (ini.ParseError() != -1) {
 		std::string encoding = ini.Get("EasyRPG", "Encoding", std::string());
 		if (!encoding.empty()) {

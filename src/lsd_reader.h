@@ -36,22 +36,22 @@ namespace LSD_Reader {
 	/**
 	 * Loads Savegame.
 	 */
-	std::unique_ptr<RPG::Save> Load(const std::string& filename, const std::string &encoding);
+	std::unique_ptr<RPG::Save> Load(std::istream& filestream, const std::string &encoding);
 
 	/**
 	 * Saves Savegame.
 	 */
-	bool Save(const std::string& filename, const RPG::Save& save, const std::string &encoding);
+	bool Save(std::ostream& filestream, const RPG::Save& save, const std::string &encoding);
 
 	/*
 	 * Saves Savegame as XML.
 	 */
-	bool SaveXml(const std::string& filename, const RPG::Save& save);
+	bool SaveXml(std::ostream& filestream, const RPG::Save& save);
 
 	/**
 	 * Loads Savegame as XML.
 	 */
-	std::unique_ptr<RPG::Save> LoadXml(const std::string& filename);
+	std::unique_ptr<RPG::Save> LoadXml(std::istream& filestream);
 }
 
 #endif

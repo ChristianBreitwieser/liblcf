@@ -41,22 +41,22 @@ namespace LDB_Reader {
 	/**
 	 * Loads Database.
 	 */
-	bool Load(const std::string& filename, const std::string& encoding);
+	bool Load(std::istream& filestream, const std::string& encoding);
 
 	/**
 	 * Saves Database.
 	 */
-	bool Save(const std::string& filename, const std::string& encoding);
+	bool Save(std::ostream& filestream, const std::string& encoding);
 
 	/**
 	 * Saves Database as XML.
 	 */
-	bool SaveXml(const std::string& filename);
+	bool SaveXml(std::ostream& filestream);
 
 	/**
 	 * Load Database as XML.
 	 */
-	bool LoadXml(const std::string& filename);
+	bool LoadXml(std::istream& filestream);
 }
 
 #endif

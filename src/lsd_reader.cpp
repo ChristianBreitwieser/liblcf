@@ -26,30 +26,30 @@ double LSD_Reader::GenerateTimestamp(std::time_t const t) {
 	return ToTDateTime(t);
 }
 
-std::unique_ptr<RPG::Save> LSD_Reader::Load(const std::string& filename, const std::string &encoding) {
-	LcfReader reader(filename, encoding);
+std::unique_ptr<RPG::Save> LSD_Reader::Load(std::istream & filestream, const std::string &encoding) {
+	LcfReader reader(filestream, encoding);
 	if (!reader.IsOk()) {
-		LcfReader::SetError("Couldn't find %s save file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse save file.\n");
 		return std::unique_ptr<RPG::Save>();
 	}
 	std::string header;
 	reader.ReadString(header, reader.ReadInt());
 	if (header.length() != 11) {
-		LcfReader::SetError("%s is not a valid RPG2000 save.\n", filename.c_str());
+		LcfReader::SetError("This is not a valid RPG2000 save.\n");
 		return std::unique_ptr<RPG::Save>();
 	}
 	if (header != "LcfSaveData") {
-		fprintf(stderr, "Warning: %s header is not LcfSaveData and might not be a valid RPG2000 save.\n", filename.c_str());
+		fprintf(stderr, "Warning: This header is not LcfSaveData and might not be a valid RPG2000 save.\n");
 	}
 	RPG::Save* save = new RPG::Save();
 	Struct<RPG::Save>::ReadLcf(*save, reader);
 	return std::unique_ptr<RPG::Save>(save);
 }
 
-bool LSD_Reader::Save(const std::string& filename, const RPG::Save& save, const std::string &encoding) {
-	LcfWriter writer(filename, encoding);
+bool LSD_Reader::Save(std::ostream & filestream, const RPG::Save& save, const std::string &encoding) {
+	LcfWriter writer(filestream, encoding);
 	if (!writer.IsOk()) {
-		LcfReader::SetError("Couldn't find %s save file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse save file.\n");
 		return false;
 	}
 	const std::string header("LcfSaveData");
@@ -62,10 +62,10 @@ bool LSD_Reader::Save(const std::string& filename, const RPG::Save& save, const 
 	return true;
 }
 
-bool LSD_Reader::SaveXml(const std::string& filename, const RPG::Save& save) {
-	XmlWriter writer(filename);
+bool LSD_Reader::SaveXml(std::ostream & filestream, const RPG::Save& save) {
+	XmlWriter writer(filestream);
 	if (!writer.IsOk()) {
-		LcfReader::SetError("Couldn't find %s save file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse save file.\n");
 		return false;
 	}
 
@@ -75,10 +75,10 @@ bool LSD_Reader::SaveXml(const std::string& filename, const RPG::Save& save) {
 	return true;
 }
 
-std::unique_ptr<RPG::Save> LSD_Reader::LoadXml(const std::string& filename) {
-	XmlReader reader(filename);
+std::unique_ptr<RPG::Save> LSD_Reader::LoadXml(std::istream & filestream) {
+	XmlReader reader(filestream);
 	if (!reader.IsOk()) {
-		LcfReader::SetError("Couldn't find %s save file.\n", filename.c_str());
+		LcfReader::SetError("Couldn't parse save file.\n");
 		return std::unique_ptr<RPG::Save>();
 	}
 
